@@ -1,4 +1,4 @@
-const pool = require("../config/database");
+import pool from "../config/database.js";
 
 const SELECT_CASO = `
   SELECT c.id, c.animal_id, c.tipo_ocorrencia, c.nome, c.especie, c.raca, c.sexo, c.porte, c.idade,
@@ -23,19 +23,23 @@ async function listar(filtros, usuarioId = 0) {
     condicoes.push("c.tipo_ocorrencia = ?");
     params.push(filtros.tipo);
   }
+
   if (filtros.busca) {
     condicoes.push("(c.nome LIKE ? OR c.raca LIKE ? OR c.descricao LIKE ?)");
     const termo = `%${escaparLike(filtros.busca)}%`;
     params.push(termo, termo, termo);
   }
+
   if (filtros.cidade) {
     condicoes.push("c.cidade LIKE ?");
     params.push(`%${escaparLike(filtros.cidade)}%`);
   }
+
   if (filtros.raca) {
     condicoes.push("c.raca LIKE ?");
     params.push(`%${escaparLike(filtros.raca)}%`);
   }
+
   if (filtros.sexo) {
     condicoes.push("c.sexo = ?");
     params.push(filtros.sexo);
@@ -45,6 +49,7 @@ async function listar(filtros, usuarioId = 0) {
     `${SELECT_CASO} WHERE ${condicoes.join(" AND ")} ORDER BY c.data_ocorrencia DESC, c.id DESC`,
     params
   );
+
   return linhas.map(mapear);
 }
 
@@ -53,12 +58,17 @@ async function listarMeus(usuarioId) {
     `${SELECT_CASO} WHERE c.usuario_id = ? ORDER BY c.id DESC`,
     [usuarioId, usuarioId]
   );
+
   return linhas.map(mapear);
 }
 
 // Detalhe: casos encerrados só aparecem para o próprio dono (filtrado no service).
 async function buscarPorId(id, usuarioId = 0) {
-  const [linhas] = await pool.query(`${SELECT_CASO} WHERE c.id = ?`, [usuarioId, id]);
+  const [linhas] = await pool.query(
+    `${SELECT_CASO} WHERE c.id = ?`,
+    [usuarioId, id]
+  );
+
   return mapear(linhas[0]);
 }
 
@@ -67,6 +77,7 @@ async function buscarBruto(id) {
     "SELECT id, usuario_id, status, foto FROM casos_desaparecidos WHERE id = ?",
     [id]
   );
+
   return linhas[0] || null;
 }
 
@@ -95,6 +106,7 @@ async function criar(usuarioId, d) {
       d.data_ocorrencia,
     ]
   );
+
   return resultado.insertId;
 }
 
@@ -127,7 +139,18 @@ async function atualizar(id, d) {
 }
 
 async function encerrar(id) {
-  await pool.query("UPDATE casos_desaparecidos SET status = 'Encerrado' WHERE id = ?", [id]);
+  await pool.query(
+    "UPDATE casos_desaparecidos SET status = 'Encerrado' WHERE id = ?",
+    [id]
+  );
 }
 
-module.exports = { listar, listarMeus, buscarPorId, buscarBruto, criar, atualizar, encerrar };
+export {
+  listar,
+  listarMeus,
+  buscarPorId,
+  buscarBruto,
+  criar,
+  atualizar,
+  encerrar,
+};

@@ -1,13 +1,17 @@
-const { Router } = require("express");
-const controller = require("../controllers/adocaoController");
-const autenticarUsuario = require("../middlewares/autenticarUsuario");
-const validarDados = require("../middlewares/validarDados");
-const { validarId } = require("../middlewares/validarDados");
-const { limiteEscrita } = require("../middlewares/limitarRequisicoes");
+import { Router } from "express";
+
+import controller from "../controllers/adocaoController.js";
+import autenticarUsuario from "../middlewares/autenticarUsuario.js";
+import validarDados, {
+  validarId,
+} from "../middlewares/validarDados.js";
+
+import { limiteEscrita } from "../middlewares/limitarRequisicoes.js";
 
 const router = Router();
 
 router.param("id", validarId);
+
 router.use(autenticarUsuario);
 
 router.post(
@@ -22,15 +26,21 @@ router.post(
 
 router.get("/meus-interesses", controller.meusInteresses);
 
-router.get("/animais/:id/interesses", controller.interessesDoAnimal);
+router.get(
+  "/animais/:id/interesses",
+  controller.interessesDoAnimal
+);
 
 router.patch(
   "/interesses/:id/status",
   limiteEscrita,
   validarDados({
-    status: { obrigatorio: true, enum: ["Pendente", "Aceito", "Recusado", "Cancelado"] },
+    status: {
+      obrigatorio: true,
+      enum: ["Pendente", "Aceito", "Recusado", "Cancelado"],
+    },
   }),
   controller.atualizarStatus
 );
 
-module.exports = router;
+export default router;

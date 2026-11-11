@@ -1,15 +1,26 @@
-const { Router } = require("express");
-const controller = require("../controllers/animalController");
-const autenticarUsuario = require("../middlewares/autenticarUsuario");
-const { autenticarOpcional } = require("../middlewares/autenticarUsuario");
-const validarDados = require("../middlewares/validarDados");
-const { validarId } = require("../middlewares/validarDados");
-const { uploadFoto } = require("../middlewares/uploadImagem");
-const { limiteEscrita } = require("../middlewares/limitarRequisicoes");
+import { Router } from "express";
+
+import controller from "../controllers/animalController.js";
+
+import autenticarUsuario, {
+  autenticarOpcional,
+} from "../middlewares/autenticarUsuario.js";
+
+import validarDados, {
+  validarId,
+} from "../middlewares/validarDados.js";
+
+import { uploadFoto } from "../middlewares/uploadImagem.js";
+import { limiteEscrita } from "../middlewares/limitarRequisicoes.js";
 
 const router = Router();
 
-const STATUS_ANIMAL = ["Comigo", "Disponível para adoção", "Desaparecido", "Adotado"];
+const STATUS_ANIMAL = [
+  "Comigo",
+  "Disponível para adoção",
+  "Desaparecido",
+  "Adotado",
+];
 
 const regrasAnimal = validarDados({
   nome: { obrigatorio: true, max: 80 },
@@ -37,18 +48,42 @@ router.get("/meus", autenticarUsuario, controller.listarMeus);
 
 router.get("/:id", autenticarOpcional, controller.obter);
 
-router.post("/", autenticarUsuario, limiteEscrita, uploadFoto, regrasAnimal, controller.criar);
+router.post(
+  "/",
+  autenticarUsuario,
+  limiteEscrita,
+  uploadFoto,
+  regrasAnimal,
+  controller.criar
+);
 
-router.put("/:id", autenticarUsuario, limiteEscrita, uploadFoto, regrasAnimal, controller.atualizar);
+router.put(
+  "/:id",
+  autenticarUsuario,
+  limiteEscrita,
+  uploadFoto,
+  regrasAnimal,
+  controller.atualizar
+);
 
-router.delete("/:id", autenticarUsuario, limiteEscrita, controller.excluir);
+router.delete(
+  "/:id",
+  autenticarUsuario,
+  limiteEscrita,
+  controller.excluir
+);
 
 router.patch(
   "/:id/status",
   autenticarUsuario,
   limiteEscrita,
-  validarDados({ status: { obrigatorio: true, enum: STATUS_ANIMAL } }),
+  validarDados({
+    status: {
+      obrigatorio: true,
+      enum: STATUS_ANIMAL,
+    },
+  }),
   controller.atualizarStatus
 );
 
-module.exports = router;
+export default router;

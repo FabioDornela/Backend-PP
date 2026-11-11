@@ -1,6 +1,6 @@
-const ErroHttp = require("../utils/erroHttp");
-const { caminhoPublico, removerImagem } = require("../utils/arquivos");
-const animalRepository = require("../repositories/animalRepository");
+import ErroHttp from "../utils/erroHttp.js";
+import { caminhoPublico, removerImagem } from "../utils/arquivos.js";
+import animalRepository from "../repositories/animalRepository.js";
 
 function camposDoAnimal(dados, imagem) {
   return {
@@ -23,10 +23,18 @@ function camposDoAnimal(dados, imagem) {
 // Garante que o animal existe e pertence ao usuário autenticado.
 async function exigirDono(id, usuarioId) {
   const animal = await animalRepository.buscarBruto(id);
-  if (!animal) throw new ErroHttp(404, "Animal não encontrado.");
-  if (animal.usuario_id !== usuarioId) {
-    throw new ErroHttp(403, "Você não tem permissão para alterar este animal.");
+
+  if (!animal) {
+    throw new ErroHttp(404, "Animal não encontrado.");
   }
+
+  if (animal.usuario_id !== usuarioId) {
+    throw new ErroHttp(
+      403,
+      "Você não tem permissão para alterar este animal."
+    );
+  }
+
   return animal;
 }
 
@@ -40,10 +48,21 @@ function listarMeus(usuario) {
 
 // Animais fora da adoção só podem ser vistos pelo próprio tutor.
 async function obter(id, usuario) {
-  const animal = await animalRepository.buscarPorId(id, usuario?.id || 0);
-  if (!animal || (animal.status !== animalRepository.STATUS_ADOCAO && !animal.eh_meu)) {
+  const animal = await animalRepository.buscarPorId(
+    id,
+    usuario?.id || 0
+  );
+
+  if (
+    !animal ||
+    (
+      animal.status !== animalRepository.STATUS_ADOCAO &&
+      !animal.eh_meu
+    )
+  ) {
     throw new ErroHttp(404, "Animal não encontrado.");
   }
+
   return animal;
 }
 
@@ -52,6 +71,7 @@ async function criar(usuario, dados, arquivo) {
     usuario.id,
     camposDoAnimal(dados, caminhoPublico(arquivo) ?? null)
   );
+
   return animalRepository.buscarPorId(id, usuario.id);
 }
 
@@ -59,11 +79,21 @@ async function atualizar(usuario, id, dados, arquivo) {
   const atual = await exigirDono(id, usuario.id);
 
   let imagem = atual.imagem;
-  if (arquivo) imagem = caminhoPublico(arquivo);
-  else if (dados.remover_foto === "true") imagem = null;
 
-  await animalRepository.atualizar(id, camposDoAnimal(dados, imagem));
-  if (imagem !== atual.imagem) removerImagem(atual.imagem);
+  if (arquivo) {
+    imagem = caminhoPublico(arquivo);
+  } else if (dados.remover_foto === "true") {
+    imagem = null;
+  }
+
+  await animalRepository.atualizar(
+    id,
+    camposDoAnimal(dados, imagem)
+  );
+
+  if (imagem !== atual.imagem) {
+    removerImagem(atual.imagem);
+  }
 
   return animalRepository.buscarPorId(id, usuario.id);
 }
@@ -75,11 +105,13 @@ async function excluir(usuario, id) {
 
 async function atualizarStatus(usuario, id, status) {
   await exigirDono(id, usuario.id);
+
   await animalRepository.atualizarStatus(id, status);
+
   return animalRepository.buscarPorId(id, usuario.id);
 }
 
-module.exports = {
+export {
   listarDisponiveis,
   listarMeus,
   obter,

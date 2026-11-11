@@ -1,9 +1,13 @@
-const ErroHttp = require("../utils/erroHttp");
-const usuarioRepository = require("../repositories/usuarioRepository");
+import ErroHttp from "../utils/erroHttp.js";
+import usuarioRepository from "../repositories/usuarioRepository.js";
 
 async function obterPerfil(usuarioId) {
   const usuario = await usuarioRepository.buscarPorId(usuarioId);
-  if (!usuario) throw new ErroHttp(404, "Usuário não encontrado.");
+
+  if (!usuario) {
+    throw new ErroHttp(404, "Usuário não encontrado.");
+  }
+
   return usuario;
 }
 
@@ -29,4 +33,4 @@ async function atualizarPerfil(usuarioId, dados) {
   return obterPerfil(usuarioId);
 }
 
-module.exports = { obterPerfil, atualizarPerfil };
+export { obterPerfil, atualizarPerfil };

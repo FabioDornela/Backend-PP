@@ -1,11 +1,15 @@
-const pool = require("../config/database");
+import pool from "../config/database.js";
 
 const CAMPOS_PUBLICOS =
   "id, nome, email, telefone, cep, rua, numero, complemento, bairro, cidade, estado, sobre";
 
 // Nunca retorna o hash da senha.
 async function buscarPorId(id) {
-  const [linhas] = await pool.query(`SELECT ${CAMPOS_PUBLICOS} FROM usuarios WHERE id = ?`, [id]);
+  const [linhas] = await pool.query(
+    `SELECT ${CAMPOS_PUBLICOS} FROM usuarios WHERE id = ?`,
+    [id]
+  );
+
   return linhas[0] || null;
 }
 
@@ -15,6 +19,7 @@ async function buscarPorEmailComSenha(email) {
     "SELECT id, senha_hash FROM usuarios WHERE email = ?",
     [email]
   );
+
   return linhas[0] || null;
 }
 
@@ -23,6 +28,7 @@ async function emailEmUso(email, ignorarId = 0) {
     "SELECT id FROM usuarios WHERE email = ? AND id <> ?",
     [email, ignorarId]
   );
+
   return linhas.length > 0;
 }
 
@@ -31,6 +37,7 @@ async function criar({ nome, email, senhaHash, telefone }) {
     "INSERT INTO usuarios (nome, email, senha_hash, telefone) VALUES (?, ?, ?, ?)",
     [nome, email, senhaHash, telefone || null]
   );
+
   return resultado.insertId;
 }
 
@@ -57,4 +64,10 @@ async function atualizarPerfil(id, dados) {
   );
 }
 
-module.exports = { buscarPorId, buscarPorEmailComSenha, emailEmUso, criar, atualizarPerfil };
+export {
+  buscarPorId,
+  buscarPorEmailComSenha,
+  emailEmUso,
+  criar,
+  atualizarPerfil,
+};

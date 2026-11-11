@@ -1,6 +1,6 @@
-const { Router } = require("express");
-const controller = require("../controllers/ongController");
-const { validarId } = require("../middlewares/validarDados");
+import { Router } from "express";
+import controller from "../controllers/ongController.js";
+import { validarId } from "../middlewares/validarDados.js";
 
 const router = Router();
 
@@ -13,4 +13,4 @@ router.get("/recomendadas", controller.recomendadas);
 
 router.get("/:id", controller.obter);
 
-module.exports = router;
+export default router;

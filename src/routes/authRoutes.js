@@ -1,8 +1,9 @@
-const { Router } = require("express");
-const controller = require("../controllers/authController");
-const autenticarUsuario = require("../middlewares/autenticarUsuario");
-const validarDados = require("../middlewares/validarDados");
-const { limiteAutenticacao } = require("../middlewares/limitarRequisicoes");
+import { Router } from "express";
+
+import controller from "../controllers/authController.js";
+import autenticarUsuario from "../middlewares/autenticarUsuario.js";
+import validarDados from "../middlewares/validarDados.js";
+import { limiteAutenticacao } from "../middlewares/limitarRequisicoes.js";
 
 const router = Router();
 
@@ -30,4 +31,4 @@ router.post(
 
 router.get("/me", autenticarUsuario, controller.me);
 
-module.exports = router;
+export default router;

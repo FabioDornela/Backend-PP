@@ -1,4 +1,4 @@
-const pool = require("../config/database");
+import pool from "../config/database.js";
 
 const STATUS_ADOCAO = "Disponível para adoção";
 
@@ -26,34 +26,41 @@ async function listarDisponiveis(filtros, usuarioId = 0) {
     const termo = `%${escaparLike(filtros.busca)}%`;
     params.push(termo, termo);
   }
+
   if (filtros.cidade) {
     condicoes.push("a.cidade LIKE ?");
     params.push(`%${escaparLike(filtros.cidade)}%`);
   }
+
   if (filtros.raca) {
     condicoes.push("a.raca LIKE ?");
     params.push(`%${escaparLike(filtros.raca)}%`);
   }
+
   if (filtros.porte) {
     condicoes.push("a.porte = ?");
     params.push(filtros.porte);
   }
+
   if (filtros.sexo) {
     condicoes.push("a.sexo = ?");
     params.push(filtros.sexo);
   }
+
   if (filtros.especie) {
     condicoes.push("a.especie = ?");
     params.push(filtros.especie);
   }
 
   let sql = `${SELECT_ANIMAL} WHERE ${condicoes.join(" AND ")} ORDER BY a.id DESC`;
+
   if (filtros.limite) {
     sql += " LIMIT ?";
     params.push(filtros.limite);
   }
 
   const [linhas] = await pool.query(sql, params);
+
   return linhas.map(mapear);
 }
 
@@ -62,11 +69,16 @@ async function listarMeus(usuarioId) {
     `${SELECT_ANIMAL} WHERE a.usuario_id = ? AND a.ativo = 1 ORDER BY a.id DESC`,
     [usuarioId, usuarioId]
   );
+
   return linhas.map(mapear);
 }
 
 async function buscarPorId(id, usuarioId = 0) {
-  const [linhas] = await pool.query(`${SELECT_ANIMAL} WHERE a.id = ? AND a.ativo = 1`, [usuarioId, id]);
+  const [linhas] = await pool.query(
+    `${SELECT_ANIMAL} WHERE a.id = ? AND a.ativo = 1`,
+    [usuarioId, id]
+  );
+
   return mapear(linhas[0]);
 }
 
@@ -76,6 +88,7 @@ async function buscarBruto(id) {
     "SELECT id, usuario_id, status, imagem FROM animais WHERE id = ? AND ativo = 1",
     [id]
   );
+
   return linhas[0] || null;
 }
 
@@ -101,6 +114,7 @@ async function criar(usuarioId, d) {
       d.imagem,
     ]
   );
+
   return resultado.insertId;
 }
 
@@ -130,19 +144,29 @@ async function atualizar(id, d) {
 }
 
 async function atualizarStatus(id, status) {
-  await pool.query("UPDATE animais SET status = ? WHERE id = ?", [status, id]);
+  await pool.query(
+    "UPDATE animais SET status = ? WHERE id = ?",
+    [status, id]
+  );
 }
 
 // Exclusão lógica: preserva o histórico e cancela interesses ainda em aberto.
 async function desativar(id) {
   const conexao = await pool.getConnection();
+
   try {
     await conexao.beginTransaction();
-    await conexao.query("UPDATE animais SET ativo = 0 WHERE id = ?", [id]);
+
+    await conexao.query(
+      "UPDATE animais SET ativo = 0 WHERE id = ?",
+      [id]
+    );
+
     await conexao.query(
       "UPDATE interesses_adocao SET status = 'Cancelado' WHERE animal_id = ? AND status = 'Pendente'",
       [id]
     );
+
     await conexao.commit();
   } catch (erro) {
     await conexao.rollback();
@@ -152,7 +176,7 @@ async function desativar(id) {
   }
 }
 
-module.exports = {
+export {
   STATUS_ADOCAO,
   listarDisponiveis,
   listarMeus,

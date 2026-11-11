@@ -1,8 +1,8 @@
-const { Router } = require("express");
-const controller = require("../controllers/usuarioController");
-const autenticarUsuario = require("../middlewares/autenticarUsuario");
-const validarDados = require("../middlewares/validarDados");
-const { limiteEscrita } = require("../middlewares/limitarRequisicoes");
+import { Router } from "express";
+import controller from "../controllers/usuarioController.js";
+import autenticarUsuario from "../middlewares/autenticarUsuario.js";
+import validarDados from "../middlewares/validarDados.js";
+import { limiteEscrita } from "../middlewares/limitarRequisicoes.js";
 
 const router = Router();
 
@@ -29,4 +29,4 @@ router.put(
   controller.atualizarPerfil
 );
 
-module.exports = router;
+export default router;

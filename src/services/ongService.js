@@ -1,5 +1,5 @@
-const ErroHttp = require("../utils/erroHttp");
-const ongRepository = require("../repositories/ongRepository");
+import ErroHttp from "../utils/erroHttp.js";
+import ongRepository from "../repositories/ongRepository.js";
 
 // Compara textos sem diferenciar maiúsculas/minúsculas nem acentos.
 function normalizar(texto) {
@@ -23,6 +23,7 @@ async function carregarTodas() {
     ongRepository.listarOngs(),
     ongRepository.listarRegioes(),
   ]);
+
   return ongs.map((ong) => formatar(ong, regioes));
 }
 
@@ -35,16 +36,26 @@ async function listar({ cidade, estado } = {}) {
     const atendeCidade =
       !cidadeNorm ||
       normalizar(ong.cidade).includes(cidadeNorm) ||
-      ong.regioes.some((r) => normalizar(r.cidade_atendida).includes(cidadeNorm));
-    const atendeEstado = !estadoNorm || normalizar(ong.estado) === estadoNorm;
+      ong.regioes.some((r) =>
+        normalizar(r.cidade_atendida).includes(cidadeNorm)
+      );
+
+    const atendeEstado =
+      !estadoNorm || normalizar(ong.estado) === estadoNorm;
+
     return atendeCidade && atendeEstado;
   });
 }
 
 async function obter(id) {
   const ong = await ongRepository.buscarOng(id);
-  if (!ong) throw new ErroHttp(404, "ONG não encontrada.");
+
+  if (!ong) {
+    throw new ErroHttp(404, "ONG não encontrada.");
+  }
+
   const regioes = await ongRepository.listarRegioesDaOng(id);
+
   return formatar(ong, regioes);
 }
 
@@ -58,6 +69,7 @@ async function obter(id) {
 async function recomendadas({ cidade, estado }) {
   const cidadeNorm = normalizar(cidade);
   const estadoNorm = normalizar(estado);
+
   if (!cidadeNorm && !estadoNorm) return [];
 
   const todas = await carregarTodas();
@@ -65,22 +77,40 @@ async function recomendadas({ cidade, estado }) {
   return todas
     .map((ong) => {
       let pontos = 0;
-      if (cidadeNorm && ong.regioes.some((r) => normalizar(r.cidade_atendida) === cidadeNorm)) {
+
+      if (
+        cidadeNorm &&
+        ong.regioes.some(
+          (r) => normalizar(r.cidade_atendida) === cidadeNorm
+        )
+      ) {
         pontos = 3;
-      } else if (cidadeNorm && normalizar(ong.cidade) === cidadeNorm) {
+      } else if (
+        cidadeNorm &&
+        normalizar(ong.cidade) === cidadeNorm
+      ) {
         pontos = 2;
       } else if (
         estadoNorm &&
-        (normalizar(ong.estado) === estadoNorm ||
-          ong.regioes.some((r) => normalizar(r.estado) === estadoNorm))
+        (
+          normalizar(ong.estado) === estadoNorm ||
+          ong.regioes.some(
+            (r) => normalizar(r.estado) === estadoNorm
+          )
+        )
       ) {
         pontos = 1;
       }
+
       return { ong, pontos };
     })
     .filter((item) => item.pontos > 0)
-    .sort((a, b) => b.pontos - a.pontos || a.ong.nome.localeCompare(b.ong.nome))
+    .sort(
+      (a, b) =>
+        b.pontos - a.pontos ||
+        a.ong.nome.localeCompare(b.ong.nome)
+    )
     .map((item) => item.ong);
 }
 
-module.exports = { listar, obter, recomendadas };
+export { listar, obter, recomendadas };

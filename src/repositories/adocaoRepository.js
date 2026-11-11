@@ -1,10 +1,11 @@
-const pool = require("../config/database");
+import pool from "../config/database.js";
 
 async function buscarInteresse(animalId, usuarioId) {
   const [linhas] = await pool.query(
     "SELECT id, status FROM interesses_adocao WHERE animal_id = ? AND usuario_id = ?",
     [animalId, usuarioId]
   );
+
   return linhas[0] || null;
 }
 
@@ -17,6 +18,7 @@ async function buscarInteressePorId(id) {
      WHERE i.id = ?`,
     [id]
   );
+
   return linhas[0] || null;
 }
 
@@ -25,6 +27,7 @@ async function criar(animalId, usuarioId, mensagem) {
     "INSERT INTO interesses_adocao (animal_id, usuario_id, mensagem) VALUES (?, ?, ?)",
     [animalId, usuarioId, mensagem || null]
   );
+
   return resultado.insertId;
 }
 
@@ -37,7 +40,10 @@ async function reabrir(id, mensagem) {
 }
 
 async function atualizarStatus(id, status) {
-  await pool.query("UPDATE interesses_adocao SET status = ? WHERE id = ?", [status, id]);
+  await pool.query(
+    "UPDATE interesses_adocao SET status = ? WHERE id = ?",
+    [status, id]
+  );
 }
 
 async function buscarDetalhado(id) {
@@ -46,6 +52,7 @@ async function buscarDetalhado(id) {
      FROM interesses_adocao i WHERE i.id = ?`,
     [id]
   );
+
   return linhas[0] || null;
 }
 
@@ -61,6 +68,7 @@ async function listarPorUsuario(usuarioId) {
      ORDER BY i.id DESC`,
     [usuarioId]
   );
+
   return linhas;
 }
 
@@ -77,10 +85,11 @@ async function listarPorAnimal(animalId) {
      ORDER BY i.id DESC`,
     [animalId]
   );
+
   return linhas;
 }
 
-module.exports = {
+export {
   buscarInteresse,
   buscarInteressePorId,
   buscarDetalhado,
