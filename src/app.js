@@ -1,17 +1,15 @@
-const express = require("express");
-const cors = require("cors");
-const { env } = require("./config/env");
-const rotas = require("./routes");
-const { limiteGeral } = require("./middlewares/limitarRequisicoes");
-const { rotaNaoEncontrada, tratarErros } = require("./middlewares/tratarErros");
+import express from "express";
+import cors from "cors";
+import { env } from "./config/env.js";
+import rotas from "./routes/index.js"; // Ajuste o caminho caso seja apenas "./routes"
+import { limiteGeral } from "./middlewares/limitarRequisicoes.js";
+import { rotaNaoEncontrada, tratarErros } from "./middlewares/tratarErros.js";
 
 const app = express();
 
 app.disable("x-powered-by");
 
-app.use(
-  cors()
-);
+app.use(cors());
 
 // Arquivos enviados: sem listagem de pasta, sem dotfiles e sem sniffing de tipo.
 app.use(
@@ -34,4 +32,4 @@ app.use("/api", limiteGeral, rotas);
 app.use(rotaNaoEncontrada);
 app.use(tratarErros);
 
-module.exports = app;
+export default app;

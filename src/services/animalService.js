@@ -120,3 +120,13 @@ export {
   excluir,
   atualizarStatus,
 };
+
+export default {
+  listarDisponiveis,
+  listarMeus,
+  obter,
+  criar,
+  atualizar,
+  excluir,
+  atualizarStatus,
+};

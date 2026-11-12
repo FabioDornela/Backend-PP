@@ -1,5 +1,5 @@
-const mysql = require("mysql2/promise");
-const { env } = require("./env");
+import mysql from "mysql2/promise";
+import { env } from "./env.js";
 
 const pool = mysql.createPool({
     host: env.db.host,
@@ -11,7 +11,6 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     charset: "utf8mb4",
 });
-
 
 // Ordem respeita as dependências entre chaves estrangeiras.
 const TABELAS = [
@@ -128,8 +127,6 @@ const TABELAS = [
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4`,
 ];
 
-// Colunas que podem faltar em bancos criados por versões anteriores do projeto.
-// Só adiciona o que não existe; nunca apaga nem altera dados.
 const COLUNAS_COMPLEMENTARES = [
   ["usuarios", "atualizado_em", "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"],
   ["animais", "bairro", "VARCHAR(100)"],
@@ -154,7 +151,6 @@ async function garantirColuna(tabela, coluna, definicao) {
   }
 }
 
-// Cria o banco (se o usuário MySQL tiver permissão) e testa a conexão.
 async function prepararBanco() {
   try {
     const conexao = await mysql.createConnection({
@@ -185,11 +181,10 @@ async function criarTabelas() {
   }
 }
 
-async function inicializarBanco() {
+export async function inicializarBanco() {
   await prepararBanco();
   await criarTabelas();
 }
 
 pool.inicializarBanco = inicializarBanco;
-module.exports = pool;
-
+export default pool;

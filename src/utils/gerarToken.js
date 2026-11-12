@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const { env } = require("../config/env");
+import jwt from "jsonwebtoken";
+import { env } from "../config/env.js";
 
 function gerarToken(usuarioId) {
   return jwt.sign({ sub: String(usuarioId) }, env.jwtSecret, {
@@ -12,4 +12,4 @@ function verificarToken(token) {
   return jwt.verify(token, env.jwtSecret);
 }
 
-module.exports = { gerarToken, verificarToken };
+export { gerarToken, verificarToken };

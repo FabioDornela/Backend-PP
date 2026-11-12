@@ -154,3 +154,13 @@ export {
   atualizar,
   encerrar,
 };
+
+export default {
+  listar,
+  listarMeus,
+  buscarPorId,
+  buscarBruto,
+  criar,
+  atualizar,
+  encerrar,
+};

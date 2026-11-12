@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const { env } = require("../config/env");
+import fs from "fs";
+import path from "path";
+import { env } from "../config/env.js";
 
 // Caminho público guardado no banco (ex.: /uploads/123-abc.jpg) a partir do arquivo enviado.
 function caminhoPublico(arquivo) {
@@ -14,4 +14,4 @@ function removerImagem(caminho) {
   if (path.dirname(arquivo) === env.uploadDir) fs.unlink(arquivo, () => {});
 }
 
-module.exports = { caminhoPublico, removerImagem };
+export { caminhoPublico, removerImagem };

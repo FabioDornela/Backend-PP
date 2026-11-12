@@ -1,4 +1,6 @@
-const { env, validarAmbiente } = require("./config/env");
+import { env, validarAmbiente } from "./config/env.js";
+import { inicializarBanco } from "./config/database.js";
+import app from "./app.js";
 
 async function iniciar() {
   try {
@@ -9,7 +11,6 @@ async function iniciar() {
   }
 
   try {
-    const { inicializarBanco } = require("./config/database");
     await inicializarBanco();
     console.log(`MySQL conectado (${env.db.host}:${env.db.port}/${env.db.database}). Tabelas verificadas.`);
   } catch (erro) {
@@ -17,7 +18,6 @@ async function iniciar() {
     process.exit(1);
   }
 
-  const app = require("./app");
   app.listen(env.port, () => {
     console.log(`API PortalPet rodando em http://localhost:${env.port}/api`);
   });

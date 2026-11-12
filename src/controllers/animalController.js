@@ -1,5 +1,5 @@
-const animalService = require("../services/animalService");
-const lerFiltros = require("../utils/lerFiltros");
+import animalService from "../services/animalService.js";
+import lerFiltros from "../utils/lerFiltros.js";
 
 async function listar(req, res) {
   const filtros = lerFiltros(req.query, ["busca", "cidade", "raca", "porte", "sexo", "especie"]);
@@ -31,4 +31,4 @@ async function atualizarStatus(req, res) {
   res.json(await animalService.atualizarStatus(req.usuario, Number(req.params.id), req.body.status));
 }
 
-module.exports = { listar, listarMeus, obter, criar, atualizar, excluir, atualizarStatus };
+export default { listar, listarMeus, obter, criar, atualizar, excluir, atualizarStatus };

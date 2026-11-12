@@ -1,4 +1,4 @@
-const usuarioService = require("../services/usuarioService");
+import usuarioService from "../services/usuarioService.js";
 
 // O usuário é sempre o do token (req.usuario), nunca um id enviado pelo cliente.
 async function obterPerfil(req, res) {
@@ -9,4 +9,4 @@ async function atualizarPerfil(req, res) {
   res.json(await usuarioService.atualizarPerfil(req.usuario.id, req.body));
 }
 
-module.exports = { obterPerfil, atualizarPerfil };
+export default { obterPerfil, atualizarPerfil };

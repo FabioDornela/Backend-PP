@@ -52,3 +52,4 @@ async function entrar({ email, senha }) {
 }
 
 export { cadastrar, entrar };
+export default { cadastrar, entrar };

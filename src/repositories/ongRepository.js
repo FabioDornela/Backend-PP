@@ -40,3 +40,10 @@ export {
   listarRegioes,
   listarRegioesDaOng,
 };
+
+export default {
+  listarOngs,
+  buscarOng,
+  listarRegioes,
+  listarRegioesDaOng,
+};

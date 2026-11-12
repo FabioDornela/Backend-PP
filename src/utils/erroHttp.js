@@ -6,4 +6,4 @@ class ErroHttp extends Error {
   }
 }
 
-module.exports = ErroHttp;
+export default ErroHttp;

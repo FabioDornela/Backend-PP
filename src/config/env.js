@@ -1,10 +1,15 @@
-const path = require("path");
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
 
-require("dotenv").config({ path: path.resolve(__dirname, "../../.env") });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const SEGREDO_EXEMPLO = "troque_por_um_segredo_forte";
 
-const env = {
+export const env = {
   nodeEnv: process.env.NODE_ENV || "development",
   port: Number(process.env.PORT || 5000),
   db: {
@@ -22,7 +27,7 @@ const env = {
 };
 
 // Falha cedo, com mensagem clara, se a configuração mínima não estiver correta.
-function validarAmbiente() {
+export function validarAmbiente() {
   const problemas = [];
 
   if (!env.jwtSecret) {
@@ -39,12 +44,10 @@ function validarAmbiente() {
   if (!(env.uploadMaxMb > 0)) problemas.push("UPLOAD_MAX_MB inválido.");
 
   if (problemas.length) {
-    throw new Error(problemas.map((p) => `- ${p}`).join("\n"));
+    throw new Error(problemas.map((p) => `\n${p}`).join("\n"));
   }
 
   if (env.jwtSecret === SEGREDO_EXEMPLO) {
     console.warn("[aviso] JWT_SECRET está com o valor de exemplo. Use um segredo próprio.");
   }
 }
-
-module.exports = { env, validarAmbiente };

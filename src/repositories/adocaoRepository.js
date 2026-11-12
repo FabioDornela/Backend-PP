@@ -99,3 +99,14 @@ export {
   listarPorUsuario,
   listarPorAnimal,
 };
+
+export default {
+  buscarInteresse,
+  buscarInteressePorId,
+  buscarDetalhado,
+  criar,
+  reabrir,
+  atualizarStatus,
+  listarPorUsuario,
+  listarPorAnimal,
+};

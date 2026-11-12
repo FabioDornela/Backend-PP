@@ -1,5 +1,5 @@
-const desaparecidosService = require("../services/desaparecidosService");
-const lerFiltros = require("../utils/lerFiltros");
+import desaparecidosService from "../services/desaparecidosService.js";
+import lerFiltros from "../utils/lerFiltros.js";
 
 async function listar(req, res) {
   const filtros = lerFiltros(req.query, ["tipo", "busca", "cidade", "raca", "sexo"]);
@@ -28,4 +28,4 @@ async function encerrar(req, res) {
   res.json(await desaparecidosService.encerrar(req.usuario, Number(req.params.id)));
 }
 
-module.exports = { listar, listarMeus, obter, criar, atualizar, encerrar };
+export default { listar, listarMeus, obter, criar, atualizar, encerrar };

@@ -134,3 +134,10 @@ export {
   interessesDoAnimal,
   atualizarStatus,
 };
+
+export default {
+  manifestarInteresse,
+  meusInteresses,
+  interessesDoAnimal,
+  atualizarStatus,
+};

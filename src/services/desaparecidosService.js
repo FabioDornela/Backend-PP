@@ -149,3 +149,12 @@ export {
   atualizar,
   encerrar,
 };
+
+export default {
+  listar,
+  listarMeus,
+  obter,
+  criar,
+  atualizar,
+  encerrar,
+};

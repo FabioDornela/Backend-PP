@@ -114,3 +114,4 @@ async function recomendadas({ cidade, estado }) {
 }
 
 export { listar, obter, recomendadas };
+export default { listar, obter, recomendadas };

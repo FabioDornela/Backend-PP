@@ -5,4 +5,4 @@ function normalizarCep(valor) {
   return digitos.length === 8 ? digitos : null;
 }
 
-module.exports = normalizarCep;
+export default normalizarCep;

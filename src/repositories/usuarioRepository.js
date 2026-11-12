@@ -71,3 +71,11 @@ export {
   criar,
   atualizarPerfil,
 };
+
+export default {
+  buscarPorId,
+  buscarPorEmailComSenha,
+  emailEmUso,
+  criar,
+  atualizarPerfil,
+};

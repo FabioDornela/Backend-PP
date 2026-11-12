@@ -34,3 +34,4 @@ async function atualizarPerfil(usuarioId, dados) {
 }
 
 export { obterPerfil, atualizarPerfil };
+export default { obterPerfil, atualizarPerfil };

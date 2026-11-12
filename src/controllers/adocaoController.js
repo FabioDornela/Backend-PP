@@ -1,4 +1,4 @@
-const adocaoService = require("../services/adocaoService");
+import adocaoService from "../services/adocaoService.js";
 
 async function manifestarInteresse(req, res) {
   res.status(201).json(await adocaoService.manifestarInteresse(req.usuario, req.body));
@@ -18,4 +18,4 @@ async function atualizarStatus(req, res) {
   );
 }
 
-module.exports = { manifestarInteresse, meusInteresses, interessesDoAnimal, atualizarStatus };
+export default { manifestarInteresse, meusInteresses, interessesDoAnimal, atualizarStatus };

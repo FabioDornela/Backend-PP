@@ -14,4 +14,4 @@ function lerFiltros(query, campos) {
   return filtros;
 }
 
-module.exports = lerFiltros;
+export default lerFiltros;

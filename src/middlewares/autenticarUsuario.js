@@ -1,6 +1,6 @@
-const ErroHttp = require("../utils/erroHttp");
-const { verificarToken } = require("../utils/gerarToken");
-const usuarioRepository = require("../repositories/usuarioRepository");
+import ErroHttp from "../utils/erroHttp.js";
+import { verificarToken } from "../utils/gerarToken.js";
+import usuarioRepository from "../repositories/usuarioRepository.js";
 
 function lerToken(req) {
   const cabecalho = req.headers.authorization || "";
@@ -42,5 +42,5 @@ async function autenticarOpcional(req, res, next) {
   next();
 }
 
-module.exports = autenticarUsuario;
-module.exports.autenticarOpcional = autenticarOpcional;
+export { autenticarOpcional };
+export default autenticarUsuario;

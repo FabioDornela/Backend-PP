@@ -187,3 +187,15 @@ export {
   atualizarStatus,
   desativar,
 };
+
+export default {
+  STATUS_ADOCAO,
+  listarDisponiveis,
+  listarMeus,
+  buscarPorId,
+  buscarBruto,
+  criar,
+  atualizar,
+  atualizarStatus,
+  desativar,
+};

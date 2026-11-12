@@ -1,4 +1,4 @@
-const authService = require("../services/authService");
+import authService from "../services/authService.js";
 
 async function cadastro(req, res) {
   const resultado = await authService.cadastrar(req.body);
@@ -13,4 +13,4 @@ async function me(req, res) {
   res.json(req.usuario);
 }
 
-module.exports = { cadastro, login, me };
+export default { cadastro, login, me };
