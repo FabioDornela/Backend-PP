@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { env } from "./config/env.js";
-import rotas from "./routes/index.js"; // Ajuste o caminho caso seja apenas "./routes"
+import rotas from "./routes/index.js";
 import { limiteGeral } from "./middlewares/limitarRequisicoes.js";
 import { rotaNaoEncontrada, tratarErros } from "./middlewares/tratarErros.js";
 
@@ -27,7 +27,9 @@ app.use(
 
 app.use(express.json({ limit: "100kb" }));
 
+// Aceita rotas tanto com /api quanto direto na raiz /
 app.use("/api", limiteGeral, rotas);
+app.use("/", limiteGeral, rotas);
 
 app.use(rotaNaoEncontrada);
 app.use(tratarErros);
