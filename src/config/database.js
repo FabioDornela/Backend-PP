@@ -1,16 +1,28 @@
 import mysql from "mysql2/promise";
 import { env } from "./env.js";
+import fs from "node:fs";
+import path from "node:path";
+
+const ssl = {
+  ca: fs.readFileSync(
+    path.resolve(process.cwd(), "ca.pem"),
+    "utf8"
+  ),
+  rejectUnauthorized: true,
+};
 
 const pool = mysql.createPool({
-    host: env.db.host,
-    port: env.db.port,
-    user: env.db.user,
-    password: env.db.password,
-    database: env.db.database,
-    waitForConnections: true,
-    connectionLimit: 10,
-    charset: "utf8mb4",
+  host: env.db.host,
+  port: env.db.port,
+  user: env.db.user,
+  password: env.db.password,
+  database: env.db.database,
+  waitForConnections: true,
+  connectionLimit: 10,
+  charset: "utf8mb4",
+  ssl,
 });
+
 
 // Ordem respeita as dependências entre chaves estrangeiras.
 const TABELAS = [
@@ -151,6 +163,8 @@ async function garantirColuna(tabela, coluna, definicao) {
   }
 }
 
+
+
 async function prepararBanco() {
   try {
     const conexao = await mysql.createConnection({
@@ -158,19 +172,23 @@ async function prepararBanco() {
       port: env.db.port,
       user: env.db.user,
       password: env.db.password,
+      database: env.db.database,
+      ssl,
     });
-    await conexao.query(
-      `CREATE DATABASE IF NOT EXISTS \`${env.db.database}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
-    );
+
+    await conexao.query("SELECT 1");
     await conexao.end();
+
   } catch (erro) {
     throw new Error(
-      `Não foi possível conectar ao MySQL em ${env.db.host}:${env.db.port} com o usuário "${env.db.user}" ` +
-        `(${erro.code || erro.message}).\n` +
-        "Verifique se o MySQL está ligado e se DB_HOST, DB_PORT, DB_USER e DB_PASSWORD estão corretos em backend/.env."
+      `Não foi possível conectar ao MySQL em ${env.db.host}:${env.db.port} ` +
+      `(${erro.code || erro.message}).\n` +
+      "Verifique as configurações do .env e o certificado SSL da Aiven."
     );
   }
 }
+
+
 
 async function criarTabelas() {
   for (const comando of TABELAS) {
